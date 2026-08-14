@@ -68,3 +68,16 @@ func TestDescribeCollectSync(t *testing.T) {
 		t.Errorf("Gather failed (legacy): %v", err)
 	}
 }
+
+func TestNewClusterManagerNodeAndClusterIDLabels(t *testing.T) {
+	reg := prometheus.NewRegistry()
+	client := fake.NewSimpleClientset()
+	containerLister := nvidia.NewContainerListerWithClientset(client)
+	c := NewClusterManager("vGPU", reg, containerLister, false, "node-1", "cluster-1")
+	if c.NodeName != "node-1" {
+		t.Errorf("expected NodeName node-1, got %s", c.NodeName)
+	}
+	if c.ClusterID != "cluster-1" {
+		t.Errorf("expected ClusterID cluster-1, got %s", c.ClusterID)
+	}
+}
